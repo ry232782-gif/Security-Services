@@ -28,10 +28,35 @@
     font-family: 'DM Sans', sans-serif;
     font-weight: 300;
     overflow-x: hidden;
-    
+    cursor: default;
   }
 
- 
+  a, button, input, textarea, select { cursor: pointer; }
+
+  /* CUSTOM CURSOR (desktop only) */
+  .cursor, .cursor-ring {
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.2s;
+  }
+  .cursor {
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+  }
+  .cursor-ring {
+    width: 30px; height: 30px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    opacity: 0.5;
+    transition: transform 0.15s ease-out, opacity 0.2s;
+  }
+  @media (max-width: 768px), (pointer: coarse) {
+    .cursor, .cursor-ring { display: none; }
+  }
+
   /* NAV */
   nav {
     position: fixed; top: 0; left: 0; right: 0;
@@ -52,13 +77,13 @@
     display: flex; align-items: center; justify-content: center;
     position: relative;
     transform: rotate(45deg);
+    flex-shrink: 0;
   }
-  .nav-emblem span {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.1rem;
-    color: var(--gold);
+  .nav-emblem img {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
     transform: rotate(-45deg);
-    letter-spacing: 1px;
   }
   .nav-brand {
     display: flex; flex-direction: column;
@@ -108,7 +133,6 @@
     font-size: 0.75rem;
     letter-spacing: 2px;
     text-transform: uppercase;
-    cursor: none;
     transition: all 0.3s;
   }
   .nav-cta:hover { background: var(--gold); color: var(--black); }
@@ -133,6 +157,7 @@
       linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
       linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
     background-size: 80px 80px;
+    -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
     mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
   }
   .hero-content {
@@ -161,7 +186,7 @@
   }
   .hero-title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(5rem, 12vw, 11rem);
+    font-size: clamp(3.2rem, 12vw, 11rem);
     line-height: 0.9;
     letter-spacing: 2px;
     margin-bottom: 1rem;
@@ -185,7 +210,7 @@
     animation: fadeUp 1s ease 0.7s forwards;
   }
   .hero-actions {
-    display: flex; gap: 1.5rem; align-items: center;
+    display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;
     opacity: 0;
     animation: fadeUp 1s ease 0.9s forwards;
   }
@@ -201,7 +226,8 @@
     text-decoration: none;
     transition: all 0.3s;
     clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
-    cursor: none;
+    display: inline-block;
+    border: none;
   }
   .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
   .btn-ghost {
@@ -213,7 +239,6 @@
     text-transform: uppercase;
     text-decoration: none;
     transition: all 0.3s;
-    cursor: none;
   }
   .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
 
@@ -267,8 +292,9 @@
   }
   .ribbon-track {
     display: flex; gap: 4rem;
-    animation: marquee 20s linear infinite;
+    animation: marquee 22s linear infinite;
     white-space: nowrap;
+    width: max-content;
   }
   .ribbon-item {
     font-family: 'Bebas Neue', sans-serif;
@@ -391,7 +417,6 @@
     position: relative;
     overflow: hidden;
     transition: all 0.4s;
-    cursor: none;
   }
   .service-card::before {
     content: '';
@@ -481,14 +506,6 @@
     color: var(--gold);
   }
   .center-emblem p { font-size: 0.65rem; letter-spacing: 2px; color: var(--white-dim); text-transform: uppercase; }
-  .orbit-dot {
-    position: absolute;
-    width: 8px; height: 8px;
-    background: var(--gold);
-    border-radius: 50%;
-    top: 50%; left: 50%;
-    transform-origin: 0 0;
-  }
 
   /* CONTACT */
   .contact-section { background: var(--deep); }
@@ -524,7 +541,6 @@
     font-size: 0.9rem;
     outline: none;
     transition: border-color 0.3s;
-    cursor: none;
   }
   .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
     border-bottom-color: var(--gold);
@@ -532,12 +548,18 @@
   .form-group select option { background: var(--deep); }
   .form-group textarea { resize: none; height: 120px; }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .form-note {
+    font-size: 0.75rem; color: var(--white-dim); margin-top: -0.5rem;
+  }
+  .form-note.success { color: #4caf77; }
+  .form-note.error { color: var(--red); }
 
   /* FOOTER */
   footer {
     border-top: 1px solid var(--border);
     padding: 3rem 4rem;
     display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1.5rem;
   }
   .footer-brand {
     font-family: 'Cormorant Garamond', serif;
@@ -575,12 +597,37 @@
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
-  .nav-emblem img{
-    width:70px;
-    height:70px;
-    border-radius:50%;
-    object-fit:cover;
-}
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+
+  /* MOBILE RESPONSIVE */
+  @media (max-width: 968px) {
+    nav { padding: 1.2rem 1.5rem; }
+    .nav-links { display: none; }
+    .nav-cta { font-size: 0.65rem; padding: 0.6rem 1.2rem; }
+
+    section { padding: 5rem 1.5rem; }
+    .services-inner, .contact-inner { padding: 5rem 1.5rem; }
+
+    .hero-content { padding: 0 1.5rem; padding-top: 6rem; }
+    .hero-stats { position: static; flex-direction: row; justify-content: space-between; margin-top: 3rem; }
+    .stat-item { text-align: left; }
+    .stat-divider { margin-left: 0; }
+    .hero-scroll { display: none; }
+
+    .about, .why-grid, .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .about-visual, .why-visual { height: 380px; }
+    .about-badge { right: 0; }
+    .cin-card { right: 0.5rem; top: 0.5rem; padding: 0.7rem 1rem; }
+
+    .services-grid { grid-template-columns: 1fr; }
+    .company-details { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+
+    footer { flex-direction: column; align-items: flex-start; text-align: left; }
+  }
 </style>
 </head>
 <body>
@@ -592,8 +639,8 @@
 <nav>
   <div class="nav-logo">
     <div class="nav-emblem">
-    <img src="mgss logo.png" alt="Logo">
-</div>
+      <img src="mgss logo.png" alt="Logo">
+    </div>
     <div class="nav-brand">
       <strong>Maa Gyanti Security</strong>
       <small>Services Private Limited</small>
@@ -605,15 +652,14 @@
     <li><a href="#why">Why Us</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <button class="nav-cta">Get Quote</button>
+  <a href="#contact" class="nav-cta" style="text-decoration:none;">Get Quote</a>
 </nav>
 
 <!-- HERO -->
-<section class="hero">
-  <div class="logo"></div>
+<section class="hero" style="padding: 0;">
+  <div class="hero-bg"></div>
   <div class="hero-grid"></div>
-  <div class="hero-image">
-    <div class="hero-image">
+  <div class="hero-content">
     <div class="hero-eyebrow">
       <div class="eyebrow-line"></div>
       <span>Registered in Bihar, India · Est. 2026</span>
@@ -623,29 +669,26 @@
       <span class="gold">GYANTI</span><br>
       <span class="outline">SECURITY</span>
     </h1>
-    <p class="hero-subtitle">PROTECTING
-WHAT
-MATTERS
-MOST.</p>
+    <p class="hero-subtitle">Protecting what matters most — people, property, and peace of mind.</p>
     <div class="hero-actions">
       <a href="#services" class="btn-primary">Our Services</a>
       <a href="#contact" class="btn-ghost">Contact Us</a>
     </div>
-  </div>
-  <div class="hero-stats">
-    <div class="stat-item">
-      <div class="stat-num">24/7</div>
-      <div class="stat-label">Round-the-Clock</div>
-      <div class="stat-divider"></div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">100%</div>
-      <div class="stat-label">Trained Personnel</div>
-      <div class="stat-divider"></div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">BR</div>
-      <div class="stat-label">Bihar Registered</div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">24/7</div>
+        <div class="stat-label">Round-the-Clock</div>
+        <div class="stat-divider"></div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Trained Personnel</div>
+        <div class="stat-divider"></div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">BR</div>
+        <div class="stat-label">Bihar Registered</div>
+      </div>
     </div>
   </div>
   <div class="hero-scroll">
@@ -673,7 +716,7 @@ MOST.</p>
 </div>
 
 <!-- ABOUT -->
-<section id="about" style="padding: 8rem 4rem; max-width: 1400px; margin: 0 auto;">
+<section id="about">
   <div class="about">
     <div class="about-visual">
       <div class="about-frame">
@@ -805,7 +848,7 @@ MOST.</p>
 </div>
 
 <!-- WHY US -->
-<section id="why" style="padding: 8rem 4rem; max-width: 1400px; margin: 0 auto;">
+<section id="why">
   <div class="why-grid">
     <div>
       <div class="section-label">Our Strengths</div>
@@ -901,24 +944,24 @@ MOST.</p>
         </div>
       </div>
       <div>
-        <div class="contact-form">
+        <form class="contact-form" id="enquiryForm" novalidate>
           <div class="form-row">
             <div class="form-group">
-              <label>Full Name</label>
-              <input type="text" placeholder="Your name">
+              <label for="fname">Full Name</label>
+              <input type="text" id="fname" placeholder="Your name" required>
             </div>
             <div class="form-group">
-              <label>Phone</label>
-              <input type="tel" placeholder="+91 XXXXX XXXXX">
+              <label for="fphone">Phone</label>
+              <input type="tel" id="fphone" placeholder="+91 XXXXX XXXXX" required>
             </div>
           </div>
           <div class="form-group">
-            <label>Email</label>
-            <input type="email" placeholder="you@example.com">
+            <label for="femail">Email</label>
+            <input type="email" id="femail" placeholder="you@example.com" required>
           </div>
           <div class="form-group">
-            <label>Service Required</label>
-            <select>
+            <label for="fservice">Service Required</label>
+            <select id="fservice" required>
               <option value="">Select a service</option>
               <option>Armed Guard Services</option>
               <option>CCTV & Surveillance</option>
@@ -929,47 +972,16 @@ MOST.</p>
             </select>
           </div>
           <div class="form-group">
-            <label>Message</label>
-            <textarea placeholder="Describe your security requirements..."></textarea>
+            <label for="fmessage">Message</label>
+            <textarea id="fmessage" placeholder="Describe your security requirements..."></textarea>
           </div>
-          
-          <button class="btn-primary" onclick="submitEnquiry()" style="align-self: flex-start; border: none; font-size: 0.8rem; letter-spacing: 2px; cursor: pointer;">Submit Enquiry</button>
-        </div>
+          <div class="form-note" id="formNote"></div>
+          <button class="btn-primary" type="submit" style="align-self: flex-start; border: none; font-size: 0.8rem; letter-spacing: 2px;">Submit Enquiry</button>
+        </form>
       </div>
     </div>
   </div>
 </div>
-<script>
-async function submitEnquiry() {
-  const data = {
-    name:    document.querySelector('input[placeholder="Your name"]').value,
-    phone:   document.querySelector('input[placeholder="+91 XXXXX XXXXX"]').value,
-    email:   document.querySelector('input[placeholder="you@example.com"]').value,
-    service: document.querySelector('select').value,
-    message: document.querySelector('textarea').value
-  };
-
-  if(!data.name || !data.phone || !data.email || !data.service) {
-    alert('Please fill all required fields!');
-    return;
-  }
-
-  try {
-    const res = await fetch('http://localhost:5000/api/enquiry', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-
-    const result = await res.json();
-    if(result.success) {
-      alert('Enquiry submitted successfully! ✅');
-    }
-  } catch(err) {
-    alert('Server se connect nahi ho pa raha. Server chalu hai? ❌');
-  }
-}
-</script>
 
 <!-- FOOTER -->
 <footer>
@@ -986,7 +998,58 @@ async function submitEnquiry() {
 </footer>
 
 <script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const cursorRing = document.getElementById('cursorRing');
+  window.addEventListener('mousemove', (e) => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    cursorRing.style.left = e.clientX + 'px';
+    cursorRing.style.top = e.clientY + 'px';
+  });
+  document.querySelectorAll('a, button, input, textarea, select').forEach(el => {
+    el.addEventListener('mouseenter', () => cursorRing.style.transform = 'translate(-50%, -50%) scale(1.6)');
+    el.addEventListener('mouseleave', () => cursorRing.style.transform = 'translate(-50%, -50%) scale(1)');
+  });
 
+  // Contact form — client-side handling (no backend required).
+  // To wire this to a real backend, replace the body of this handler
+  // with a fetch() call to your API endpoint.
+  const form = document.getElementById('enquiryForm');
+  const note = document.getElementById('formNote');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const name = document.getElementById('fname').value.trim();
+    const phone = document.getElementById('fphone').value.trim();
+    const email = document.getElementById('femail').value.trim();
+    const service = document.getElementById('fservice').value;
+    const message = document.getElementById('fmessage').value.trim();
+
+    if (!name || !phone || !email || !service) {
+      note.textContent = 'Please fill all required fields.';
+      note.className = 'form-note error';
+      return;
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      note.textContent = 'Please enter a valid email address.';
+      note.className = 'form-note error';
+      return;
+    }
+
+    // Open the user's mail client with a pre-filled enquiry.
+    const subject = encodeURIComponent('Security Service Enquiry — ' + service);
+    const body = encodeURIComponent(
+      `Name: ${name}\nPhone: ${phone}\nEmail: ${email}\nService: ${service}\nMessage: ${message}`
+    );
+    window.location.href = `mailto:info@maagyantisecurity.com?subject=${subject}&body=${body}`;
+
+    note.textContent = 'Opening your email client to send the enquiry...';
+    note.className = 'form-note success';
+  });
 
   // Scroll reveal
   const observer = new IntersectionObserver(entries => {
